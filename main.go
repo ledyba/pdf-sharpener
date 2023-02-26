@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
+	"image"
+	"image/jpeg"
 	"log"
 	"os"
 )
@@ -79,8 +82,15 @@ func main() {
 					if !sd.Image() {
 						continue
 					}
-					_ = os.WriteFile("image.jpg", sd.Raw, os.ModePerm)
-					log.Print(sd)
+					buf := bytes.Buffer{}
+					img := image.NewRGBA(image.Rect(0, 0, 100, 100))
+					err = jpeg.Encode(&buf, img, &jpeg.Options{Quality: 98})
+					if err != nil {
+						log.Fatal(err)
+					}
+					sd.Raw = buf.Bytes()
+					*sd.StreamLength = int64(buf.Len())
+					ent.Object = sd
 				}
 			}
 		}
