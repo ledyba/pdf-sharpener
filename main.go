@@ -41,21 +41,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//for i := 0; i < ctx.PageCount; i++ {
-	//	for _, obj := range ctx.Optimize.ImageObjects {
-	//		buf := bytes.Buffer{}
-	//		img := image.NewRGBA(image.Rect(0, 0, 100, 100))
-	//		err = jpeg.Encode(&buf, img, &jpeg.Options{Quality: 98})
-	//		if err != nil {
-	//			log.Fatal(err)
-	//		}
-	//		sd, _, _, err := pdfcpu.CreateImageStreamDict(ctx.XRefTable, &buf, false, false)
-	//		if err != nil {
-	//			log.Fatal(err)
-	//		}
-	//		obj.ImageDict = sd
-	//	}
-	//}
 	for _, e := range ctx.Table {
 		if d, ok := e.Object.(pdfcpu.Dict); ok {
 			if typ := d.Type(); typ == nil || *typ != "Page" {
