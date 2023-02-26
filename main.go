@@ -19,13 +19,17 @@ func main() {
 	if rs, err = os.Open(*input); err != nil {
 		log.Fatal(err)
 	}
-	defer rs.Close()
+	defer func() {
+		_ = rs.Close()
+	}()
 
 	var ws *os.File
 	if ws, err = os.Create(*output); err != nil {
 		log.Fatal(err)
 	}
-	defer ws.Close()
+	defer func() {
+		_ = ws.Close()
+	}()
 
 	config := pdfcpu.NewDefaultConfiguration()
 	ctx, err := api.ReadContext(rs, config)
