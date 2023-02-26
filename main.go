@@ -1,12 +1,9 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
-	"image"
-	"image/jpeg"
 	"log"
 	"os"
 )
@@ -67,14 +64,16 @@ func main() {
 					if !sd.Image() {
 						continue
 					}
-					buf := bytes.Buffer{}
-					img := image.NewRGBA(image.Rect(0, 0, 100, 100))
-					err = jpeg.Encode(&buf, img, &jpeg.Options{Quality: 98})
+					color := sd.Dict.NameEntry("ColorSpace")
+					if color == nil || *color != "DeviceGray" {
+						continue
+					}
+					buf, err := FilterImage(sd.Raw)
 					if err != nil {
 						log.Fatal(err)
 					}
-					sd.Raw = buf.Bytes()
-					*sd.StreamLength = int64(buf.Len())
+					sd.Raw = buf
+					*sd.StreamLength = int64(len(buf))
 					ent.Object = sd
 				}
 			}
