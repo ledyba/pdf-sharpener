@@ -15,20 +15,16 @@ func main() {
 
 	flag.Parse()
 
+	if *input == *output {
+		log.Fatalf("Input file and output file are the same: %s == %s", *input, *output)
+	}
+
 	var rs *os.File
 	if rs, err = os.Open(*input); err != nil {
 		log.Fatal(err)
 	}
 	defer func() {
 		_ = rs.Close()
-	}()
-
-	var ws *os.File
-	if ws, err = os.Create(*output); err != nil {
-		log.Fatal(err)
-	}
-	defer func() {
-		_ = ws.Close()
 	}()
 
 	config := pdfcpu.NewDefaultConfiguration()
@@ -84,6 +80,13 @@ func main() {
 		}
 	}
 
+	var ws *os.File
+	if ws, err = os.Create(*output); err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		_ = ws.Close()
+	}()
 	if err = api.WriteContext(ctx, ws); err != nil {
 		log.Fatal(err)
 	}
