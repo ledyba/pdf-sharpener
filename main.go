@@ -72,8 +72,11 @@ func main() {
 					if err != nil {
 						log.Fatal(err)
 					}
+					*ent.Offset = 0
 					sd.Raw = buf
 					*sd.StreamLength = int64(len(buf))
+					sd.StreamLengthObjNr = nil
+					sd.StreamOffset = 0
 					ent.Object = sd
 				}
 			}
