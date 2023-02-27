@@ -7,3 +7,10 @@ go build .
 
 # Showcase
 
+## Before
+
+![Before](.github/before.png)
+
+## After
+
+![After](.github/after.png)
