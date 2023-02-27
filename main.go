@@ -52,33 +52,35 @@ func main() {
 				continue
 			}
 			for _, o := range xObj {
-				if ref, ok := o.(pdfcpu.IndirectRef); ok {
-					ent, found := ctx.XRefTable.FindTableEntry(ref.ObjectNumber.Value(), ref.GenerationNumber.Value())
-					if !found {
-						continue
-					}
-					sd, ok := ent.Object.(pdfcpu.StreamDict)
-					if !ok {
-						continue
-					}
-					if !sd.Image() {
-						continue
-					}
-					color := sd.Dict.NameEntry("ColorSpace")
-					if color == nil || *color != "DeviceGray" {
-						continue
-					}
-					buf, err := FilterImage(sd.Raw)
-					if err != nil {
-						log.Fatal(err)
-					}
-					*ent.Offset = 0
-					sd.Raw = buf
-					*sd.StreamLength = int64(len(buf))
-					sd.StreamLengthObjNr = nil
-					sd.StreamOffset = 0
-					ent.Object = sd
+				ref, ok := o.(pdfcpu.IndirectRef)
+				if !ok {
+					continue
 				}
+				ent, found := ctx.XRefTable.FindTableEntry(ref.ObjectNumber.Value(), ref.GenerationNumber.Value())
+				if !found {
+					continue
+				}
+				sd, ok := ent.Object.(pdfcpu.StreamDict)
+				if !ok {
+					continue
+				}
+				if !sd.Image() {
+					continue
+				}
+				color := sd.Dict.NameEntry("ColorSpace")
+				if color == nil || *color != "DeviceGray" {
+					continue
+				}
+				buf, err := FilterImage(sd.Raw)
+				if err != nil {
+					log.Fatal(err)
+				}
+				*ent.Offset = 0
+				sd.Raw = buf
+				*sd.StreamLength = int64(len(buf))
+				sd.StreamLengthObjNr = nil
+				sd.StreamOffset = 0
+				ent.Object = sd
 			}
 		}
 	}
