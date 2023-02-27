@@ -53,7 +53,7 @@ func FilterImage(orig []byte) ([]byte, error) {
 		img.Pix[idx] = LUT[img.Pix[idx]]
 	}
 	buf := bytes.Buffer{}
-	err = jpeg.Encode(&buf, img, &jpeg.Options{Quality: 95})
+	err = jpeg.Encode(&buf, img, &jpeg.Options{Quality: 90})
 	if err != nil {
 		return nil, err
 	}
