@@ -82,6 +82,10 @@ func main() {
 			}
 		}
 	}
+	err = api.ValidateContext(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	var ws *os.File
 	if ws, err = os.Create(*output); err != nil {
